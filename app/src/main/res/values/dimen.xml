@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="heading">24sp</dimen>
+    <dimen name="title">18sp</dimen>
+    <dimen name="text">14sp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+
+</resources>

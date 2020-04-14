@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">NA Notes</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="time">Time</string>
+</resources>
