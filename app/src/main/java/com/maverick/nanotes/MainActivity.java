@@ -25,25 +25,6 @@ public class MainActivity extends AppCompatActivity {
         	startActivityForResult(new Intent(MainActivity.this,NoteEdit.class),NEW_NOTE_ACTIVITY_RESULT_CODE);
         });
 
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-
-
     }
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-
-		if(requestCode == NEW_NOTE_ACTIVITY_RESULT_CODE && resultCode == RESULT_OK){
-
-			Toast.makeText(this,
-					"Saved",
-					Toast.LENGTH_SHORT).show();
-
-		}else{
-			Toast.makeText(this,
-					"Not Saved",
-					Toast.LENGTH_SHORT).show();
-		}
-	}
 }

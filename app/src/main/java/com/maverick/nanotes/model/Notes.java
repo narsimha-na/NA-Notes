@@ -12,34 +12,48 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "notes")
 public class Notes {
 
-	@PrimaryKey
-	@NonNull
-	private String id;
+	@PrimaryKey(autoGenerate = true)
+	private int id;
 
-	@NonNull
 	@ColumnInfo(name = "note")
-	private String notes;
+	private String note;
 
-	@NonNull
-	public String getId() {
+	@ColumnInfo(name = "date")
+	private String date;
+
+	@Ignore
+	public Notes(String note, String date) {
+		this.note = note;
+		this.date = date;
+	}
+
+	public Notes(int id, String note, String date) {
+		this.id = id;
+		this.note = note;
+		this.date = date;
+	}
+
+	public int getId() {
 		return id;
 	}
 
-	public void setId(@NonNull String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	@NonNull
-	public String getNotes() {
-		return notes;
+	public String getNote() {
+		return note;
 	}
 
-	public void setNotes(@NonNull String notes) {
-		this.notes = notes;
+	public void setNote(String note) {
+		this.note = note;
 	}
 
-	public Notes(@NonNull String id, @NonNull String notes) {
-		this.id = id;
-		this.notes = notes;
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 }
