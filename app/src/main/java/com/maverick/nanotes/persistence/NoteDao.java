@@ -1,10 +1,12 @@
 package com.maverick.nanotes.persistence;
 
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.maverick.nanotes.model.Notes;
 
@@ -14,16 +16,20 @@ import java.util.List;
 public interface NoteDao {
 
 	@Query("SELECT * FROM notes")
-	List<Notes> loadNotes();
+	LiveData<List<Notes>> loadNotes();
 
 	@Insert
-	void insertNotes(Notes ...notes);
+	void insertNotes(Notes notes);
 
 	@Delete
 	void deleteNotes(Notes notes);
 
+	@Query("DELETE FROM notes")
+	void deleteAllNotes();
 
-	@Query("SELECT * FROM notes WHERE id = :id")
-	Notes loadPersonById(int id);
+	@Update
+	void updateNote(Notes notes);
+
+
 
 }
