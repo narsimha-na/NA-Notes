@@ -3,4 +3,6 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="time">Time</string>
+    <string name="mark_as_important">Mark as Important</string>
+    <string name="note_title">Note Title</string>
 </resources>
