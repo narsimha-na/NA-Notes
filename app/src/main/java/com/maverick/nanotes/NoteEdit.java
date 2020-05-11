@@ -1,104 +1,85 @@
 package com.maverick.nanotes;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
-import com.maverick.nanotes.model.Notes;
-import com.maverick.nanotes.persistence.AppExecutors;
-import com.maverick.nanotes.persistence.NoteDao;
-import com.maverick.nanotes.persistence.NoteDatabase;
-import com.maverick.nanotes.utils.Constants;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
 
 public class NoteEdit extends AppCompatActivity {
 
-	public static String NOTE_ADDED = "new_note";
-	private EditText editTitle,editDesc;
-	private CheckBox checkBox;
-	private LinearLayout view;
-	private static String TAG = "NoteEdit";
+	public static final String EXTRA_ID =
+			"com.codinginflow.architectureexample.EXTRA_ID";
+	public static final String EXTRA_TITLE =
+			"com.codinginflow.architectureexample.EXTRA_TITLE";
+	public static final String EXTRA_DESCRIPTION =
+			"com.codinginflow.architectureexample.EXTRA_DESCRIPTION";
+	public static final String EXTRA_PRIORITY =
+			"com.codinginflow.architectureexample.EXTRA_PRIORITY";
+
+	private EditText editTextTitle;
+	private EditText editTextDescription;
+	private NumberPicker numberPickerPriority;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_note_edit);
 
-		view = findViewById(R.id.parent_view);
-		editTitle = findViewById(R.id.ne_edit_title);
-		editDesc = findViewById(R.id.ne_edit_desc);
-		checkBox = findViewById(R.id.ne_check_box);
-
-		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
-
+		editTextTitle = findViewById(R.id.edit_text_title);
+		editTextDescription = findViewById(R.id.edit_text_description);
+		numberPickerPriority = findViewById(R.id.number_picker_priority);
+		numberPickerPriority.setMinValue(1);
+		numberPickerPriority.setMaxValue(10);
+		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white);
 		Intent intent = getIntent();
-		if(intent != null){
-			if(intent.hasExtra(Constants.ID)){
-				setTitle("Edit Note");
-				editTitle.setText(intent.getStringExtra(Constants.TITLE));
-				editDesc.setText(intent.getStringExtra(Constants.DESC));
-				checkBox.setChecked(intent.getBooleanExtra(Constants.IMP,false));
-			}else{
-				setTitle("Add Note");
-			}
+		if (intent.hasExtra(EXTRA_ID)) {
+			setTitle("Edit Note");
+			editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+			editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+			numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
+		} else {
+			setTitle("Add Note");
 		}
-
 	}
-
+	private void saveNote() {
+		String title = editTextTitle.getText().toString();
+		String description = editTextDescription.getText().toString();
+		int priority = numberPickerPriority.getValue();
+		if (title.trim().isEmpty() || description.trim().isEmpty()) {
+			Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		Intent data = new Intent();
+		data.putExtra(EXTRA_TITLE, title);
+		data.putExtra(EXTRA_DESCRIPTION, description);
+		data.putExtra(EXTRA_PRIORITY, priority);
+		int id = getIntent().getIntExtra(EXTRA_ID, -1);
+		if (id != -1) {
+			data.putExtra(EXTRA_ID, id);
+		}
+		setResult(RESULT_OK, data);
+		finish();
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
-		menuInflater.inflate(R.menu.menu_edit_notes,menu);
+		menuInflater.inflate(R.menu.menu_edit_notes, menu);
 		return true;
 	}
-
 	@Override
-	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (item.getItemId() == R.id.menu_edit_notes_save) {
-			saveNotes();
-			return true;
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.save_note:
+				saveNote();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	private void saveNotes() {
-		String title = editTitle.getText().toString();
-		String desc = editDesc.getText().toString();
-		boolean imp = false;
-		imp = checkBox.isChecked();
-
-		if(title.trim().isEmpty() || desc.trim().isEmpty()){
-			Snackbar.make(view,"Please enter the title and description",Snackbar.LENGTH_SHORT).show();
-			return;
-		}
-
-		Intent data = new Intent();
-		data.putExtra(Constants.TITLE,title);
-		data.putExtra(Constants.DESC,desc);
-		data.putExtra(Constants.IMP,imp);
-
-		int id = getIntent().getIntExtra(Constants.ID,-1);
-		if(id != -1){
-			data.putExtra(Constants.ID,id);
-		}
-		setResult(RESULT_OK,data);
-		finish();
-
 	}
 }

@@ -1,10 +1,7 @@
 package com.maverick.nanotes.persistence;
 
-import android.app.Application;
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -12,46 +9,37 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.maverick.nanotes.model.Notes;
+import com.maverick.nanotes.model.Note;
 import com.maverick.nanotes.utils.Constants;
-
-@Database(entities = {Notes.class},version = 1,exportSchema = true)
-public abstract  class NoteDatabase  extends RoomDatabase {
-	private static NoteDatabase sInstance;
-
-	public static NoteDatabase getInstance(Context context) {
-		if (sInstance == null) {
-				sInstance = Room.databaseBuilder(context.getApplicationContext(),
-						NoteDatabase.class,Constants.DATABASE_NAME)
-						.fallbackToDestructiveMigration()
-						.build();
-		}
-		return sInstance;
-	}
-
+@Database(entities = {Note.class}, version = 1)
+public abstract class NoteDatabase extends RoomDatabase {
+	private static NoteDatabase instance;
 	public abstract NoteDao noteDao();
-
-	private static RoomDatabase.Callback roomCallBack = new RoomDatabase.Callback(){
+	public static synchronized NoteDatabase getInstance(Context context) {
+		if (instance == null) {
+			instance = Room.databaseBuilder(context.getApplicationContext(),
+					NoteDatabase.class, "note_database")
+					.fallbackToDestructiveMigration()
+					.addCallback(roomCallback)
+					.build();
+		}
+		return instance;
+	}
+	private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback() {
 		@Override
 		public void onCreate(@NonNull SupportSQLiteDatabase db) {
 			super.onCreate(db);
-			new PopulateDb(sInstance).execute();
+			new PopulateDbAsyncTask(instance).execute();
 		}
 	};
-
-	private static class PopulateDb extends AsyncTask<Void,Void,Void>{
-
+	private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void> {
 		private NoteDao noteDao;
-
-		public PopulateDb(NoteDatabase noteDb) {
-			noteDao = noteDb.noteDao();
+		private PopulateDbAsyncTask(NoteDatabase db) {
+			noteDao = db.noteDao();
 		}
-
 		@Override
 		protected Void doInBackground(Void... voids) {
-			noteDao.insertNotes(new Notes("hi","THis is narsimha",true,"12-20-9"));
-			noteDao.insertNotes(new Notes("Bye","THis is Reddy",true,"12-20-9a"));
-
+			noteDao.insert(new Note("Title ", "Description ", 1));
 			return null;
 		}
 	}

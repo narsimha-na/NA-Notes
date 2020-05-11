@@ -4,7 +4,7 @@
     <item
         android:icon="@drawable/ic_save_white"
         android:title="save"
-        android:id="@+id/menu_edit_notes_save"
+        android:id="@+id/save_note"
         app:showAsAction="ifRoom"
         />
 </menu>

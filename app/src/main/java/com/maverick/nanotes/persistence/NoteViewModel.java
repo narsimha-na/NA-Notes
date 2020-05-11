@@ -6,29 +6,31 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.maverick.nanotes.model.Notes;
+import com.maverick.nanotes.model.Note;
 
 import java.util.List;
 
 public class NoteViewModel extends AndroidViewModel {
-	private NoteRepository respository;
-	private LiveData<List<Notes>> allNotes;
-
+	private NoteRepository repository;
+	private LiveData<List<Note>> allNotes;
 	public NoteViewModel(@NonNull Application application) {
 		super(application);
-		respository = new NoteRepository(application);
-		allNotes = respository.getAllNotes();
+		repository = new NoteRepository(application);
+		allNotes = repository.getAllNotes();
 	}
-
-	public void insert(Notes notes){respository.insert(notes);}
-
-	public void update(Notes notes){respository.update(notes);}
-
-	public void delete(Notes notes){ respository.delete(notes);}
-
-	public void deleteAll(){respository.deleteAllNotes();}
-
-	public LiveData<List<Notes>> getAllNotes(){
+	public void insert(Note note) {
+		repository.insert(note);
+	}
+	public void update(Note note) {
+		repository.update(note);
+	}
+	public void delete(Note note) {
+		repository.delete(note);
+	}
+	public void deleteAllNotes() {
+		repository.deleteAllNotes();
+	}
+	public LiveData<List<Note>> getAllNotes() {
 		return allNotes;
 	}
 }
